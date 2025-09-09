@@ -14,10 +14,21 @@
     "indentStyle": "space",
     "indentWidth": 2
   },
+  "javascript": {
+    "formatter": {
+      "semicolons": "asNeeded",
+      "quoteProperties": "preserve",
+      "trailingCommas": "all",
+      "quoteStyle": "single"
+    }
+  },
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "suspicious": {
+        "noUnknownAtRules": "off"
+      }
     },
     "domains": {
       "next": "recommended",
