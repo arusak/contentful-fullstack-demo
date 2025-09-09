@@ -4,7 +4,7 @@ export interface ContentfulInstruction {
   contentTypeId: 'instruction'
   fields: {
     title: EntryFieldTypes.Text
-    description: EntryFieldTypes.Text
+    description: EntryFieldTypes.RichText
   }
 }
 
@@ -15,5 +15,5 @@ export type InstructionCollection = EntryCollection<ContentfulInstruction>
 export interface Instruction {
   id: string
   title: string
-  description: string
+  content: string[]
 }

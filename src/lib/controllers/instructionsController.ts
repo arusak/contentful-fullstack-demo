@@ -1,4 +1,5 @@
 import { client } from '@/lib/config/contentfulClient'
+import type { ContentfulInstruction } from '@/lib/types/ContentfulTypes'
 import { roleMapping } from '../config/roleMapping'
 
 // Utility function to map roles to tags
@@ -52,7 +53,7 @@ export async function getInstructions(roles: string[]) {
   } catch (err) {
     console.error(err)
 
-    return errorResponse(500, (err as any).message ?? 'Internal Server Error')
+    return errorResponse()
   }
 }
 
@@ -63,20 +64,26 @@ export async function getInstructionById(
   const userTags = toTags(roles)
 
   try {
-    const entry = await client.getEntry(instructionId, { include: 2 })
+    const entry = await client.getEntry<ContentfulInstruction>(instructionId, {
+      include: 2,
+    })
     const entryTags = (entry.metadata.tags || []).map((tag) => tag.sys.id)
     const hasAccess = entryTags.some((tag) => userTags.includes(tag))
     if (!hasAccess) return errorResponse(403, 'Access denied')
 
-    jsonResponse({
+    return jsonResponse({
       id: entry.sys.id,
       title: entry.fields.title,
-      content: entry.fields.content,
+      content: entry.fields.description.content.map((c) =>
+        // @ts-expect-error
+        c.content.map((cc) => cc.value),
+      ),
       tags: entryTags,
       createdAt: entry.sys.createdAt,
       updatedAt: entry.sys.updatedAt,
     })
   } catch (err) {
-    errorResponse()
+    console.error(err)
+    return errorResponse()
   }
 }
