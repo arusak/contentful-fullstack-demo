@@ -9,6 +9,8 @@ export function GET(request: NextRequest) {
     const rolesStr = request.headers.get('X-User-Roles')
     const roles = rolesStr ? rolesStr.split(',') : []
 
+    console.log('GET instruction', roles.join(','))
+
     return getInstructions(roles)
   } catch (error) {
     console.error(error)
