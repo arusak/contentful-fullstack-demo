@@ -1,9 +1,10 @@
 import Link from 'next/link'
-import { use } from 'react'
 import type { Instruction } from '@/lib/types/ContentfulTypes'
 
+export const dynamic = 'force-dynamic'
+
 async function getInstructions(): Promise<Instruction[]> {
-  const response = await fetch(`${process.env.BASE_URL}/api/instruction`, {
+  const response = await fetch(`/api/instruction`, {
     headers: {
       'X-User-Roles': 'Support',
     },
@@ -13,8 +14,8 @@ async function getInstructions(): Promise<Instruction[]> {
   return data.items
 }
 
-export default function Home() {
-  const instructions = use(getInstructions())
+export default async function Home() {
+  const instructions = await getInstructions()
 
   return (
     <div>
