@@ -23,10 +23,11 @@ The purpose of this demo is to show how one can use Next.js internally to serve 
 - Contentful space and API access token
 
 ### Environment variables
-Create a `.env.local` file in the repository root with the following variables:
-- `CONTENTFUL_ACCESS_TOKEN` – Contentful CDA (Content Delivery API) token
+Create a `.env.local` file in the repository root with the following variables (see `.env.example`):
 - `CONTENTFUL_SPACE_ID` – Your Contentful Space ID
-- `BASE_URL` – Used to call local API endpoints
+- `CONTENTFUL_ACCESS_TOKEN` – Contentful CDA (Content Delivery API) token
+- `NEXT_PUBLIC_SITE_URL` – The origin used by server components to call local API endpoints (e.g., http://localhost:3000). In production on Vercel this is set automatically.
+- `PORT` – Optional. Port for local dev server (defaults to 3000; if you set this, also update NEXT_PUBLIC_SITE_URL accordingly).
 
 ### Notes
 - The frontend and API expect a header X-User-Roles with a comma-separated list of roles. 
@@ -53,7 +54,7 @@ Create a `.env.local` file in the repository root with the following variables:
   - GET /api/instruction/:id
     - Reads X-User-Roles header, verifies access to the requested entry’s tags, and returns item details or 403 if unauthorized.
 - UI (App Router)
-  - `src/app/page.tsx` lists instructions (calls the API using BASE_URL).
+  - `src/app/page.tsx` lists instructions (calls the API using NEXT_PUBLIC_SITE_URL to reach the local API).
   - `src/app/instruction/[id]/page.tsx` shows a single instruction using rich text rendering.
 - Contentful client
   - `src/lib/config/contentfulClient.js` creates the Contentful client from CONTENTFUL_SPACE_ID and CONTENTFUL_ACCESS_TOKEN.
@@ -70,7 +71,6 @@ Create a `.env.local` file in the repository root with the following variables:
   - `config/roleMapping.ts` — valid roles and tag mapping
   - `controllers/instructionsController.ts` — API business logic and response helpers
   - `types/ContentfulTypes.ts` — TypeScript types for Contentful entries
-  - `instruction/[id]/page.tsx` — detail page
 
 ### Local testing the APIs with curl
 - List instructions (roles: Support):
@@ -82,12 +82,10 @@ Create a `.env.local` file in the repository root with the following variables:
 - No automated tests are present in this repository as of 2025-09-10. TODO: Add unit tests for controllers and integration tests for API routes.
 
 ### Development tips
-- BASE_URL is used in server components (use()) to call the local API. For local dev, set it to http://localhost:3000. In production, set it to your deployed origin (e.g., https://your-domain.example).
+- NEXT_PUBLIC_SITE_URL is used by server components to call the local API. For local dev, set it to your dev origin (e.g., http://localhost:3000). In production, set it to your deployed origin (e.g., https://your-domain.example). If you change the dev port, update both PORT and NEXT_PUBLIC_SITE_URL accordingly.
+- Vercel sets NEXT_PUBLIC_SITE_URL automatically.
 - Roles and tags must correspond to Contentful entry tags (metadata.tags). Update `roleMapping.ts` to match your space.
 
 ### Deployment
-- Any platform that supports Next.js 15 (Node 18.18+). Provide env vars and a proper BASE_URL. If deploying behind a custom domain, set BASE_URL to that domain so server components can reach the API.
+- Any platform that supports Next.js 15 (Node 18.18+). Provide env vars and a proper NEXT_PUBLIC_SITE_URL. If deploying behind a custom domain, set NEXT_PUBLIC_SITE_URL to that domain so server components can reach the API.
 - TODO: Add platform-specific instructions (e.g., Vercel, Docker) if/when chosen.
-
-### License
-- No license file found. TODO: Add a `LICENSE` file (e.g., MIT) and update this section accordingly.

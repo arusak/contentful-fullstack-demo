@@ -3,11 +3,14 @@ import Link from 'next/link'
 import type { Instruction } from '@/lib/types/ContentfulTypes'
 
 async function getInstructionById(id: string): Promise<Instruction> {
-  const response = await fetch(`/api/instruction/${id}`, {
-    headers: {
-      'X-User-Roles': 'Support',
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/instruction/${id}`,
+    {
+      headers: {
+        'X-User-Roles': 'Support',
+      },
     },
-  })
+  )
   if (!response.ok) throw new Error(`Error: ${response.status}`)
   return response.json()
 }
