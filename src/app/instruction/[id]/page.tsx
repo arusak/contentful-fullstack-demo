@@ -1,3 +1,4 @@
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
 import { headers } from 'next/headers'
 import Link from 'next/link'
 import { use } from 'react'
@@ -29,9 +30,7 @@ export default function Home({ params }: { params: Promise<{ id: string }> }) {
     <div>
       <Link href="/">&lt; Back</Link>
       <h1>{instruction.title}</h1>
-      {instruction.content.map((i, idx) => (
-        <p key={i + String(idx)}>{i}</p>
-      ))}
+      <div>{documentToReactComponents(instruction.description)}</div>
     </div>
   )
 }

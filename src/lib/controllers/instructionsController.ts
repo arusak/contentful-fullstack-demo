@@ -74,10 +74,7 @@ export async function getInstructionById(
     return jsonResponse({
       id: entry.sys.id,
       title: entry.fields.title,
-      content: entry.fields.description.content.map((c) =>
-        // @ts-expect-error
-        c.content.map((cc) => cc.value),
-      ),
+      description: entry.fields.description,
       tags: entryTags,
       createdAt: entry.sys.createdAt,
       updatedAt: entry.sys.updatedAt,

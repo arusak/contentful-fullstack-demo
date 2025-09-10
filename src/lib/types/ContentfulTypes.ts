@@ -1,3 +1,4 @@
+import type { Document } from '@contentful/rich-text-types'
 import type { Entry, EntryCollection, EntryFieldTypes } from 'contentful'
 
 export interface ContentfulInstruction {
@@ -15,5 +16,5 @@ export type InstructionCollection = EntryCollection<ContentfulInstruction>
 export interface Instruction {
   id: string
   title: string
-  content: string[]
+  description: Document
 }
