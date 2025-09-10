@@ -1,16 +1,14 @@
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
 import Link from 'next/link'
+import { baseUrl } from '@/lib/controllers/baseUrl'
 import type { Instruction } from '@/lib/types/ContentfulTypes'
 
 async function getInstructionById(id: string): Promise<Instruction> {
-  const response = await fetch(
-    `https://${process.env.VERCEL_URL}/api/instruction/${id}`,
-    {
-      headers: {
-        'X-User-Roles': 'Support',
-      },
+  const response = await fetch(`${baseUrl}/api/instruction/${id}`, {
+    headers: {
+      'X-User-Roles': 'Support',
     },
-  )
+  })
   if (!response.ok)
     throw new Error(
       `Error getting instruction by id: ${response.status} ${response.statusText}`,
