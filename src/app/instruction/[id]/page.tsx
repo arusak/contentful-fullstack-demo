@@ -4,7 +4,7 @@ import type { Instruction } from '@/lib/types/ContentfulTypes'
 
 async function getInstructionById(id: string): Promise<Instruction> {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_SITE_URL}/api/instruction/${id}`,
+    `${process.env.VERCEL_URL}/api/instruction/${id}`,
     {
       headers: {
         'X-User-Roles': 'Support',
