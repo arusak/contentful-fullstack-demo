@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Contentful Full‑Stack Demo
 
-## Getting Started
+### Overview
+The purpose of this demo is to show how one can use Next.js internally to serve data from Contentful.
 
-First, run the development server:
+Reads content from Contentful and serves it via API routes under /api/instruction. 
+Access to items is filtered by user roles passed via a request header.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Stack
+- Language: TypeScript
+- Framework: Next.js 15 (App Router)
+- Render: React 19
+- Data: Contentful SDK
+- Package manager: pnpm
+- Lint/format: Biome
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Requirements
+- Node.js 18+ (Next.js 15 requirement)
+- pnpm 8+
+- Contentful space and API access token
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Environment variables
+Create a .env.local file in the repository root with the following variables:
+- CONTENTFUL_ACCESS_TOKEN – Contentful CDA (Content Delivery API) token
+- CONTENTFUL_SPACE_ID – Your Contentful Space ID
+- BASE_URL – Used to call local API endpoints
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Notes
+- The frontend and API expect a header X-User-Roles with a comma-separated list of roles. Valid roles are defined in src/lib/config/roleMapping.ts: Support, Customer, Tech Advisor.
 
-## Learn More
+### Setup
+1) Install dependencies
+- pnpm install
 
-To learn more about Next.js, take a look at the following resources:
+2) Configure env vars
+- Copy .env.example to .env.local and update the variables 
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3) Start the app (development)
+- pnpm dev
+- Open http://localhost:3000
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Build and run
+- Build: pnpm build
+- Start (production): pnpm start
 
-## Deploy on Vercel
+### How it works
+- API routes
+  - GET /api/instruction
+    - Reads X-User-Roles header, maps to tag IDs, fetches matching instruction entries from Contentful, and returns a list.
+  - GET /api/instruction/:id
+    - Reads X-User-Roles header, verifies access to the requested entry’s tags, and returns item details or 403 if unauthorized.
+- UI (App Router)
+  - src/app/page.tsx lists instructions (calls the API using BASE_URL).
+  - src/app/instruction/[id]/page.tsx shows a single instruction using rich text rendering.
+- Contentful client
+  - src/lib/config/contentfulClient.js creates the Contentful client from CONTENTFUL_SPACE_ID and CONTENTFUL_ACCESS_TOKEN.
+- Role mapping
+  - src/lib/config/roleMapping.ts maps human roles to tag IDs used to filter Contentful entries.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Project structure (selected)
+- src/app
+  - page.tsx — list of instructions (server component)
+  - api/instruction/route.ts — GET list endpoint
+  - api/instruction/[id]/route.ts — GET detail endpoint
+  - instruction/[id]/page.tsx — detail page
+- src/lib
+  - config/contentfulClient.js — Contentful SDK client
+  - config/roleMapping.ts — valid roles and tag mapping
+  - controllers/instructionsController.ts — API business logic and response helpers
+  - middleware/roleValidation.js — legacy/unwired validation (see note)
+  - types/ContentfulTypes.ts — TypeScript types for Contentful entries
+- public — static assets
+- next.config.ts — Next.js config
+- biome.json — Biome (lint/format) config
+- tsconfig.json — TypeScript config
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Local testing the APIs with curl
+- List instructions (roles: Support):
+  curl -H "X-User-Roles: Support" http://localhost:3000/api/instruction
+- Get one instruction by id:
+  curl -H "X-User-Roles: Support" http://localhost:3000/api/instruction/<ID>
+
+### Tests
+- No automated tests are present in this repository as of 2025-09-10. TODO: Add unit tests for controllers and integration tests for API routes.
+
+### Development tips
+- BASE_URL is used in server components (use()) to call the local API. For local dev, set it to http://localhost:3000. In production, set it to your deployed origin (e.g., https://your-domain.example).
+- Roles and tags must correspond to Contentful entry tags (metadata.tags). Update roleMapping.ts to match your space.
+
+### Deployment
+- Any platform that supports Next.js 15 (Node 18.18+). Provide env vars and a proper BASE_URL. If deploying behind a custom domain, set BASE_URL to that domain so server components can reach the API.
+- TODO: Add platform-specific instructions (e.g., Vercel, Docker) if/when chosen.
+
+### License
+- No license file found. TODO: Add a LICENSE file (e.g., MIT) and update this section accordingly.
