@@ -28,8 +28,6 @@ export async function getInstructions(roles: string[]) {
   try {
     const roleTags = toTags(roles)
 
-    console.log('requested tags:', roleTags)
-
     if (!roleTags.length) return jsonResponse({ items: [] })
 
     const entries = await client.getEntries({
