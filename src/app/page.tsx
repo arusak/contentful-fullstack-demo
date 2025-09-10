@@ -12,7 +12,10 @@ async function getInstructions(): Promise<Instruction[]> {
       },
     },
   )
-  if (!response.ok) throw new Error(`Error: ${response.status}`)
+  if (!response.ok)
+    throw new Error(
+      `Error getting list of instructions: ${response.status} ${response.statusText}`,
+    )
   const data = await response.json()
   return data.items
 }

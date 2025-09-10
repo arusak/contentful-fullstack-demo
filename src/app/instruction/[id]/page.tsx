@@ -11,7 +11,10 @@ async function getInstructionById(id: string): Promise<Instruction> {
       },
     },
   )
-  if (!response.ok) throw new Error(`Error: ${response.status}`)
+  if (!response.ok)
+    throw new Error(
+      `Error getting instruction by id: ${response.status} ${response.statusText}`,
+    )
   return response.json()
 }
 
