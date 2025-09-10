@@ -21,15 +21,13 @@ export default function GlobalError({
         persists, contact support.
       </p>
 
-      {/*{process.env.NODE_ENV === 'development' && (*/}
       <details style={{ whiteSpace: 'pre-wrap', marginTop: 16 }}>
-        <summary>Error details (development only)</summary>
+        <summary>Error details</summary>
         <pre>
           {error.message}
           {error?.digest ? `\n\nDigest: ${error.digest}` : ''}
         </pre>
       </details>
-      {/*)}*/}
 
       <div style={{ marginTop: 24, display: 'flex', gap: 12 }}>
         <button
