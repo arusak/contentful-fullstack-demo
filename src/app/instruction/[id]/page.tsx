@@ -1,7 +1,7 @@
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
 import Link from 'next/link'
 import { baseUrl } from '@/lib/controllers/baseUrl'
-import type { Instruction } from '@/lib/types/ContentfulTypes'
+import type { Instruction } from '@/lib/types/AppTypes'
 
 async function getInstructionById(id: string): Promise<Instruction> {
   const response = await fetch(`${baseUrl}/api/instruction/${id}`, {

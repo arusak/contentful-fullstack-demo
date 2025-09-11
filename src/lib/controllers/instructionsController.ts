@@ -1,6 +1,9 @@
+import { NextResponse } from 'next/server'
 import { client } from '@/lib/config/contentfulClient'
+import { roleMapping } from '@/lib/config/roleMapping'
+import type { ErrorBody } from '@/lib/types/ApiTypes'
+import type { Instruction } from '@/lib/types/AppTypes'
 import type { ContentfulInstruction } from '@/lib/types/ContentfulTypes'
-import { roleMapping } from '../config/roleMapping'
 
 // Utility function to map roles to tags
 export function toTags(roles: string[]) {
@@ -8,16 +11,23 @@ export function toTags(roles: string[]) {
 }
 
 // Helper function for error handling
-export function errorResponse(status = 500, message = 'Internal Server Error') {
-  return new Response(JSON.stringify({ code: status, error: message }), {
+export function errorResponse(
+  status = 500,
+  message = 'Internal Server Error',
+): NextResponse<ErrorBody> {
+  return new NextResponse(JSON.stringify({ code: status, error: message }), {
     status,
     statusText: message,
     headers: { 'Content-Type': 'application/json' },
   })
 }
 
-export function jsonResponse(body: object, status = 200, statusText = 'OK') {
-  return new Response(JSON.stringify(body), {
+export function jsonResponse<T extends object>(
+  body: T,
+  status = 200,
+  statusText = 'OK',
+): NextResponse<T> {
+  return new NextResponse(JSON.stringify(body), {
     headers: { 'Content-Type': 'application/json' },
     status,
     statusText,
@@ -58,7 +68,7 @@ export async function getInstructions(roles: string[]) {
 export async function getInstructionById(
   roles: string[],
   instructionId: string,
-) {
+): Promise<NextResponse<Instruction | ErrorBody>> {
   const userTags = toTags(roles)
 
   try {
@@ -74,8 +84,10 @@ export async function getInstructionById(
       title: entry.fields.title,
       description: entry.fields.description,
       tags: entryTags,
-      createdAt: entry.sys.createdAt,
-      updatedAt: entry.sys.updatedAt,
+      createdAt: new Date(entry.sys.createdAt),
+      updatedAt: new Date(entry.sys.updatedAt),
+      categories:
+        entry.metadata.concepts?.map((concept) => concept.sys.id) ?? [],
     })
   } catch (err) {
     console.error(err)

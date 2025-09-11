@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { baseUrl } from '@/lib/controllers/baseUrl'
-import type { Instruction } from '@/lib/types/ContentfulTypes'
+import type { Instruction } from '@/lib/types/AppTypes'
 
 export const dynamic = 'force-dynamic'
 
