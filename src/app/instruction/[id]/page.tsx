@@ -1,5 +1,6 @@
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
 import Link from 'next/link'
+import { CategoryCrumbs } from '@/app/_components/CategoryCrumbs'
 import { baseUrl } from '@/lib/controllers/baseUrl'
 import type { Instruction } from '@/lib/types/AppTypes'
 
@@ -26,9 +27,18 @@ export default async function Home({
 
   return (
     <div>
-      <Link href="/">&lt; Back</Link>
-      <h1>{instruction.title}</h1>
+      <header>
+        <Link href="/">&lt; Back</Link>
+        <h1>{instruction.title}</h1>
+        <p>{new Date(instruction.updatedAt).toLocaleString()}</p>
+      </header>
       <div>{documentToReactComponents(instruction.description)}</div>
+      <footer>
+        <hr />
+        {instruction.categories[0] ? (
+          <CategoryCrumbs id={instruction.categories[0]} />
+        ) : null}
+      </footer>
     </div>
   )
 }

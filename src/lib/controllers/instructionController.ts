@@ -84,8 +84,8 @@ export async function getInstructionById(
       title: entry.fields.title,
       description: entry.fields.description,
       tags: entryTags,
-      createdAt: new Date(entry.sys.createdAt),
-      updatedAt: new Date(entry.sys.updatedAt),
+      createdAt: entry.sys.createdAt,
+      updatedAt: entry.sys.updatedAt,
       categories:
         entry.metadata.concepts?.map((concept) => concept.sys.id) ?? [],
     })

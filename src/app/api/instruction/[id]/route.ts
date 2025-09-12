@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server'
 import {
   errorResponse,
   getInstructionById,
-} from '@/lib/controllers/instructionsController'
+} from '@/lib/controllers/instructionController'
 
 export async function GET(
   request: NextRequest,

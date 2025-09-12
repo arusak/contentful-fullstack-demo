@@ -1,6 +1,6 @@
 import type { Document } from '@contentful/rich-text-types'
 
-export interface Instruction {
+export type Instruction = {
   id: string
   title: string
   description: Document
@@ -8,4 +8,16 @@ export interface Instruction {
   tags: string[]
   createdAt: string
   updatedAt: string
+}
+
+export type Category = {
+  id: string
+  name: string
+  parentId: string | null
+}
+
+export type TreeNode<T> = {
+  id: string
+  data: T
+  children: TreeNode<T>[]
 }
